@@ -1,0 +1,24 @@
+{
+  "browser": true,
+  "curly": true,
+  "devel": true,
+  "eqeqeq": true,
+  "eqnull": true,
+  "es3": true,
+  "evil": true,
+  "expr": true,
+  "funcscope": true,
+  "latedef": true,
+  "laxbreak": true,
+  "loopfunc": true,
+  "newcap": false,
+  "noempty": true,
+  "nonstandard": true,
+  "strict": true,
+  "sub": true,
+  "undef": true,
+  "globals": {
+    "module": true,
+    "require": true
+  }
+}
