@@ -5,13 +5,11 @@ Random something with animation
 
 ## Install
 
-### Node modules
-`npm install`
+```javascript
+`npm install -g grunt-cli` // grunt
+`npm install -g bower` // bower
+`sudo gem install sass` // sass
 
-
-### Bower
-`npm install -g bower`
-`bower install`
-
-
-Hello, World!
+`npm install` // install node modules
+`bower install` // install node modules
+```
