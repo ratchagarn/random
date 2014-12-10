@@ -12,3 +12,6 @@ Random something with animation
 ### Bower
 `npm install -g bower`
 `bower install`
+
+
+Hello, World!
