@@ -2,6 +2,9 @@ module.exports = function(grunt) {
 
   'use strict';
 
+  var _config = grunt.file.readJSON('config.json');
+
+
   grunt.initConfig({
     
     pkg: grunt.file.readJSON('package.json'),
@@ -20,6 +23,7 @@ module.exports = function(grunt) {
      */
     
     clean: {
+      sass_cache: '.sass-cache',
       css: 'src/css',
       dev: 'dev',
       dist: 'dist'
@@ -33,11 +37,14 @@ module.exports = function(grunt) {
      */
     
     sass: {
-      dist: {
+      // options: {
+      //   compass: true
+      // },
+      main: {
         files: [{
           expand: true,
           cwd: 'src/scss',
-          src: ['**/*.scss'],
+          src: ['main.scss'],
           dest: 'src/css',
           ext: '.css'
         }]
@@ -57,11 +64,11 @@ module.exports = function(grunt) {
         stripBanners: false
       },
       js: {
-        src: ['src/js/**/*.js'],
+        src: _config.sources.js,
         dest: 'dist/<%= pkg.name %>.js'
       },
       css: {
-        src: ['src/css/**/*.css'],
+        src: ['src/css/main.css'],
         dest: 'dist/<%= pkg.name %>.css'
       }
     },
@@ -78,13 +85,13 @@ module.exports = function(grunt) {
         files: [
           'src/js/**/*.js'
         ],
-        tasks: ['concat:js']
+        tasks: ['jshint']
       },
       scss: {
         files: [
           'src/scss/**/*.scss'
         ],
-        tasks: ['newer:sass', 'concat:css']
+        tasks: ['sass', 'csslint']
       }
     },
 
@@ -117,27 +124,9 @@ module.exports = function(grunt) {
       options: {
         csslintrc: '.csslintrc'
       },
-      src: 'src/css/**/*.css'
+      src: 'src/css/main.css'
     },
 
-
-    /**
-     * ------------------------------------------------------------
-     * Copy files
-     * ------------------------------------------------------------
-     */
-
-    // copy: {
-    //   javascripts: {
-    //     files: [{
-    //       expand: true,
-    //       cwd: 'src',
-    //       src: ['js/**/*.js'],
-    //       dest: 'dev'
-    //     }
-    //   }
-    // },
-    
 
     /**
      * ------------------------------------------------------------
@@ -169,7 +158,7 @@ module.exports = function(grunt) {
         keepSpecialComments: 0
       },
       files: {
-        src: 'dist/<%= pkg.name %>.css',
+        src: 'src/css/main.css',
         dest: 'dist/<%= pkg.name %>.min.css'
       }
     }
@@ -190,9 +179,6 @@ module.exports = function(grunt) {
   // https://github.com/gruntjs/grunt-contrib-watch
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  // https://github.com/gruntjs/grunt-contrib-watch
-  // grunt.loadNpmTasks('grunt-contrib-copy');
-
   // https://github.com/gruntjs/grunt-contrib-sass
   grunt.loadNpmTasks('grunt-contrib-sass');
 
@@ -209,8 +195,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 
-  grunt.registerTask('default', ['jshint', 'csslint', 'clean:css', 'sass']);
+  grunt.registerTask('default', ['clean', 'sass', 'jshint', 'csslint']);
   grunt.registerTask('dev', ['default', 'watch']);
-  grunt.registerTask('dist', ['clean', 'default', 'concat', 'uglify', 'cssmin']);
+  grunt.registerTask('dist', ['default', 'concat', 'uglify', 'cssmin']);
 
 };

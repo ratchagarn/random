@@ -1,0 +1,8 @@
+{
+  "sources": {
+    "js": [
+      "src/js/random.js",
+      "src/js/animation.js"
+    ]
+  }
+}

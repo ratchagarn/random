@@ -18,7 +18,8 @@
   "sub": true,
   "undef": true,
   "globals": {
-    "module": true,
-    "require": true
+    "Random": true,
+    "jQuery": true,
+    "Mousetrap": true
   }
 }

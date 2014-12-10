@@ -1,8 +1,14 @@
-$font-stack:    Helvetica, sans-serif;
-$primary-color: #333;
+@import "includes/reset.scss";
+@import "includes/variable.scss";
+
+/**
+ * main style
+ */
 
 body {
   font: 100% $font-stack;
   color: $primary-color;
   font-weight: bold;
 }
+
+@import "random";

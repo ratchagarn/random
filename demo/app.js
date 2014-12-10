@@ -2,6 +2,6 @@
 
 'use strict';
 
-console.log('Demo app script working !');
+window.random = new Random(['A', 'B', 'C']);
 
 }).call(this);
