@@ -4,8 +4,7 @@
 
 var global = this,
     util = global.util,
-    Random = global.Random,
-    animation = {};
+    Random = global.Random;
 
 
 /**
@@ -27,8 +26,8 @@ function Animation() {
 
 Animation.prototype = {
 
-  play: function() {
-    console.log('Play animation !');
+  init: function() {
+    console.log('Animation init !');
   }
 
 };
@@ -36,11 +35,11 @@ Animation.prototype = {
 
 /**
  * ------------------------------------------------------------
- * Extend Random prototype
+ * Add as Random plugin
  * ------------------------------------------------------------
  */
 
-Random.extend(Animation.prototype);
+Random.addPlugin('Animation', Animation);
 
 
 }).call(this);

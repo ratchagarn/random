@@ -1,9 +1,3 @@
-/*!
- * Random version 0.1.0
- * Copyright 2014-Preset
- * Author: Ratchagarn Naewbuntad & Watcharakrit Phantu
- * Licensed under MIT
- */
 (function() {
 
 'use strict';
@@ -306,81 +300,6 @@ Random.prototype = {
 
 global.util = util;
 global.Random = Random;
-
-
-}).call(this);
-(function() {
-
-'use strict';
-
-var global = this,
-    util = global.util,
-    Random = global.Random;
-
-
-/**
- * Animation core function
- * ------------------------------------------------------------
- * @name Animation
- */
-
-function Animation() {
-  this.init();
-}
-
-
-/**
- * ------------------------------------------------------------
- * Extend Animation prototype
- * ------------------------------------------------------------
- */
-
-Animation.prototype = {
-
-  init: function() {
-    console.log('Animation init !');
-  }
-
-};
-
-
-/**
- * ------------------------------------------------------------
- * Add as Random plugin
- * ------------------------------------------------------------
- */
-
-Random.addPlugin('Animation', Animation);
-
-
-}).call(this);
-(function() {
-
-'use strict';
-
-var global = this,
-    Random = global.Random;
-
-
-/**
- * ------------------------------------------------------------
- * Extend core prototype
- * ------------------------------------------------------------
- */
-
-Random.extend({
-
-  hookInit: function() {
-    // load plugin animation
-    this.animation = new ( Random.loadPlugin('Animation') )();
-    // console.log(this.animation);
-  },
-
-  play: function() {
-    console.log('Play');
-  }
-
-});
 
 
 }).call(this);
