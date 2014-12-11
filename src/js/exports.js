@@ -30,13 +30,22 @@ if (!window.exports && !window.require) {
    * Require function
    * ------------------------------------------------------------
    * @name require
-   * @param {String} context name
+   * @param {String} context name (set to `__list` for view exports avaliable right now)
    * @return {Object} export function
    */
 
   window.require = function(name) {
-    if (exports_function[name]) {
-      return exports_function[name];
+    if (name === '__list') {
+      var exports_avaliable = [];
+      for (var _name in exports_function) {
+        exports_avaliable.push(_name);
+      }
+      return exports_avaliable;
+    }
+    else {
+      if (exports_function[name]) {
+        return exports_function[name];
+      }
     }
   };
 
