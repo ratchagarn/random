@@ -3,10 +3,13 @@ random
 
 Random something with animation
 
-## Version 0.2.1
+## Version 0.2.2
 
 
 ## Change log
+
+### 0.2.2
+- Update `require` function. Now can clone function or object.
 
 
 ### 0.2.1

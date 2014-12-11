@@ -92,6 +92,11 @@ Random.prototype = {
     this.default_source = this.options.source.slice(0);
     this.rollback_source = [];
 
+    // fire hook
+    if (typeof this.hookInit === 'function') {
+      this.hookInit.call(this);
+    }
+
 
     return this;
   },
