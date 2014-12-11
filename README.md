@@ -3,9 +3,14 @@ random
 
 Random something with animation
 
-## Version 0.2.0
+## Version 0.2.1
+
 
 ## Change log
+
+
+### 0.2.1
+- Add feature for view exports avaliable right now.
 
 
 ### 0.2.0
