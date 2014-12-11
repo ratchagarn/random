@@ -8,8 +8,59 @@
 
 'use strict';
 
-var global = this,
-    slice = Array.prototype.slice;
+
+var exports_function = {};
+
+
+/**
+ * Exports function
+ * ------------------------------------------------------------
+ * @name exports
+ * @param {String} context name
+ * @param {Function} export function
+ */
+
+if (!window.exports && !window.require) {
+
+  window.exports = function(name, func) {
+    // check exports function exist or not
+    if (exports_function[name]) {
+      throw new Error('Exports name `' + name + '` is already exist.');
+    }
+
+    exports_function[name] = func;
+  };
+
+
+  /**
+   * Require function
+   * ------------------------------------------------------------
+   * @name require
+   * @param {String} context name
+   * @return {Object} export function
+   */
+
+  window.require = function(name) {
+    if (exports_function[name]) {
+      return exports_function[name];
+    }
+  };
+
+}
+else {
+
+  throw new Error('function `exports` or `require` is alreay exits.');
+
+}
+
+
+}).call(this);
+(function() {
+
+'use strict';
+
+
+var global = this;
 
 
 /**
@@ -18,79 +69,100 @@ var global = this,
  * ------------------------------------------------------------
  */
 
+var util = (function(context) {
 
-var util = {
+  return {
 
-  /**
-   * Blank function
-   * ------------------------------------------------------------
-   * @name Random.noop
-   * @return {Function} blank function useful when use as default callback
-   */
+    /**
+     * Blank function
+     * ------------------------------------------------------------
+     * @name Random.noop
+     * @return {Function} blank function useful when use as default callback
+     */
 
-  noop: function noop() {},
+    noop: function noop() {},
 
 
-  /**
-   * Deep extend object.
-   * ============================================================
-   * @name extend
-   * @param {Object} destination object.
-   * @param {Object} object for extend to destination.
-   * @return {Object} reference to destination.
-   * See: http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
-   */
+    /**
+     * Deep extend object.
+     * ============================================================
+     * @name extend
+     * @param {Object} destination object.
+     * @param {Object} object for extend to destination.
+     * @return {Object} reference to destination.
+     * See: http://andrewdupont.net/2009/08/28/deep-extending-objects-in-javascript/
+     */
 
-  extend: function(dst, source) {
-    for (var prop in source) {
-      if (source[prop] && source[prop].constructor && source[prop].constructor === Object) {
-        dst[prop] = dst[prop] || {};
-        global.util.extend(dst[prop], source[prop]);
-      } else {
-        dst[prop] = source[prop];
+    extend: function(dst, source) {
+      for (var prop in source) {
+        if (source[prop] && source[prop].constructor && source[prop].constructor === Object) {
+          dst[prop] = dst[prop] || {};
+          global.util.extend(dst[prop], source[prop]);
+        } else {
+          dst[prop] = source[prop];
+        }
       }
-    }
-    return dst;
-  },
+      return dst;
+    },
 
 
-  /**
-   * Clone object.
-   * ------------------------------------------------------------
-   * @name Random.clone
-   * @param {Object} object is want to clone.
-   * @return {Object} object it is not inherit of another.
-   */
+    /**
+     * Clone object.
+     * ------------------------------------------------------------
+     * @name Random.clone
+     * @param {Object} object is want to clone.
+     * @return {Object} object it is not inherit of another.
+     */
 
-  clone: function(from) {
-    var name, to;
-    to = {};
-    for (name in from) {
-      if (from.hasOwnProperty(name)) {
-        to[name] = from[name];
+    clone: function(from) {
+      var name, to;
+      to = {};
+      for (name in from) {
+        if (from.hasOwnProperty(name)) {
+          to[name] = from[name];
+        }
       }
+      return to;
+    },
+
+
+    /**
+     * Random number between range
+     * Returns a random integer between min (inclusive) and max (inclusive)
+     * Using Math.round() will give you a non-uniform distribution!
+     * see: http://stackoverflow.com/questions/1527803/generating-random-numbers-in-javascript-in-a-specific-range
+     * ------------------------------------------------------------
+     * @name Random.rand
+     * @param {Number} min range
+     * @param {Number} max range
+     * @return {Number} random number
+     */
+
+    rand: function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
     }
-    return to;
-  },
+  };
+
+})(global);
 
 
-  /**
-   * Random number between range
-   * Returns a random integer between min (inclusive) and max (inclusive)
-   * Using Math.round() will give you a non-uniform distribution!
-   * see: http://stackoverflow.com/questions/1527803/generating-random-numbers-in-javascript-in-a-specific-range
-   * ------------------------------------------------------------
-   * @name Random.rand
-   * @param {Number} min range
-   * @param {Number} max range
-   * @return {Number} random number
-   */
+/**
+ * ------------------------------------------------------------
+ * Exports function
+ * ------------------------------------------------------------
+ */
 
-  rand: function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+exports('util', util);
 
-};
+
+}).call(this);
+(function() {
+
+'use strict';
+
+var global = this,
+    slice = Array.prototype.slice,
+    util = require('util');
 
 
 /**
@@ -106,24 +178,6 @@ function Random(options) {
 
 
 /**
- * ------------------------------------------------------------
- * Assign util to Core
- * ------------------------------------------------------------
- */
-
-Random.util = util;
-
-
-/**
- * ------------------------------------------------------------
- * comment
- * ------------------------------------------------------------
- */
-
-Random.plugin = {};
-
-
-/**
  * Extend function to core function prototype
  * ------------------------------------------------------------
  * @name Random.extend
@@ -134,41 +188,6 @@ Random.extend = function(func) {
   // don't override core method.
   Random.prototype = util.extend(func, Random.prototype);
 };
-
-
-/**
- * Add plugin
- * ------------------------------------------------------------
- * @name Random.addPlugin
- * @param {String} plugin name
- * @param {Function} plugin function
- */
-
-Random.addPlugin = function(name, func) {
-
-  // check plugin exist or not
-  if (Random.plugin[name]) {
-    throw new Error('Plugin name `' + name + '` is already exist.');
-  }
-
-  Random.plugin[name] = func;
-};  
-
-
-/**
- * Load plugin
- * ------------------------------------------------------------
- * @name Random.loadPlugin
- * @param {String} plugin name
- * @return {Object} Random object for chaning
- */
-
-Random.loadPlugin = function(name) {
-  if (Random.plugin[name]) {
-    return Random.plugin[name];
-  }
-};
-
 
 
 /**
@@ -300,12 +319,11 @@ Random.prototype = {
 
 /**
  * ------------------------------------------------------------
- * Assign to global scope
+ * Exports function
  * ------------------------------------------------------------
  */
 
-global.util = util;
-global.Random = Random;
+exports('Random', Random);
 
 
 }).call(this);
@@ -313,9 +331,9 @@ global.Random = Random;
 
 'use strict';
 
+
 var global = this,
-    util = global.util,
-    Random = global.Random;
+    util = require('util');
 
 
 /**
@@ -346,11 +364,11 @@ Animation.prototype = {
 
 /**
  * ------------------------------------------------------------
- * Add as Random plugin
+ * Exports function
  * ------------------------------------------------------------
  */
 
-Random.addPlugin('Animation', Animation);
+exports('Animation', Animation);
 
 
 }).call(this);
@@ -358,9 +376,10 @@ Random.addPlugin('Animation', Animation);
 
 'use strict';
 
-var global = this,
-    Random = global.Random;
 
+var global = this,
+    Random = require('Random'),
+    util = require('util');
 
 /**
  * ------------------------------------------------------------
@@ -372,8 +391,7 @@ Random.extend({
 
   hookInit: function() {
     // load plugin animation
-    this.animation = new ( Random.loadPlugin('Animation') )();
-    // console.log(this.animation);
+    this.animation = new ( require('Animation') )();
   },
 
   play: function() {
@@ -381,6 +399,15 @@ Random.extend({
   }
 
 });
+
+
+/**
+ * ------------------------------------------------------------
+ * Assign to global scope
+ * ------------------------------------------------------------
+ */
+
+global.Random = Random;
 
 
 }).call(this);

@@ -1,6 +1,8 @@
 {
   "sources": {
     "js": [
+      "src/js/exports.js",
+      "src/js/util.js",
       "src/js/core.js",
       "src/js/animation.js",
       "src/js/random.js"

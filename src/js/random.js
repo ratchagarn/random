@@ -2,9 +2,10 @@
 
 'use strict';
 
-var global = this,
-    Random = global.Random;
 
+var global = this,
+    Random = require('Random'),
+    util = require('util');
 
 /**
  * ------------------------------------------------------------
@@ -16,8 +17,7 @@ Random.extend({
 
   hookInit: function() {
     // load plugin animation
-    this.animation = new ( Random.loadPlugin('Animation') )();
-    // console.log(this.animation);
+    this.animation = new ( require('Animation') )();
   },
 
   play: function() {
@@ -25,6 +25,15 @@ Random.extend({
   }
 
 });
+
+
+/**
+ * ------------------------------------------------------------
+ * Assign to global scope
+ * ------------------------------------------------------------
+ */
+
+global.Random = Random;
 
 
 }).call(this);

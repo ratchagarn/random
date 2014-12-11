@@ -2,9 +2,9 @@
 
 'use strict';
 
+
 var global = this,
-    util = global.util,
-    Random = global.Random;
+    util = require('util');
 
 
 /**
@@ -35,11 +35,11 @@ Animation.prototype = {
 
 /**
  * ------------------------------------------------------------
- * Add as Random plugin
+ * Exports function
  * ------------------------------------------------------------
  */
 
-Random.addPlugin('Animation', Animation);
+exports('Animation', Animation);
 
 
 }).call(this);
