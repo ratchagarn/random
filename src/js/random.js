@@ -7,6 +7,7 @@ var global = this,
     Random = require('Random'),
     util = require('util');
 
+
 /**
  * ------------------------------------------------------------
  * Extend core prototype
