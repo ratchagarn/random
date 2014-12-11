@@ -156,7 +156,7 @@ exports('util', util);
 
 
 }).call(this);
-(function() {
+(function(simpleStorage) {
 
 'use strict';
 
@@ -172,6 +172,7 @@ var global = this,
  */
 
 function Random(options) {
+  this.storage_name = 'random_source';
   this.options = options;
   this.init();
 }
@@ -187,6 +188,24 @@ function Random(options) {
 Random.extend = function(func) {
   // don't override core method.
   Random.prototype = util.extend(func, Random.prototype);
+};
+
+
+/**
+ * Do auto save state if options is avaliable
+ * ------------------------------------------------------------
+ * @name Random.doAutoSaveState
+ * @return {Boolean} Save state or not
+ */
+
+Random.doAutoSaveState = function(context) {
+  if (context.options.autoSaveState) {
+    context.saveState();
+    return true;
+  }
+  else {
+    return false;
+  }
 };
 
 
@@ -209,22 +228,28 @@ Random.prototype = {
   init: function() {
     console.log('Init random !');
 
-    var default_options = {};
-    this.options = util.extend(default_options, this.options);
+    var default_options = {
+          source: [],
+          autoSaveState: false,
+          defaultTTL: 86400000
+        },
+        random_source_state = this.getState();
 
+    this.options = util.extend(default_options, this.options);
+    this.source = this.options.source.slice(0);
+
+    // resume state if avaliable
+    if (random_source_state) {
+      this.source = random_source_state.slice(0);
+    }
     // for init 2nd+
-    if (this.default_source) {
-      this.options.source = this.default_source.slice(0);
+    else if (this.default_source) {
+      this.source = this.default_source.slice(0);
     }
 
-    this.source = this.options.source.slice(0);
-    this.default_source = this.source.slice(0);
+    this.default_source = this.options.source.slice(0);
     this.rollback_source = [];
 
-    // fire hook function
-    if (typeof this.hookInit === 'function') {
-      this.hookInit.call(this);
-    }
 
     return this;
   },
@@ -245,6 +270,52 @@ Random.prototype = {
 
 
   /**
+   * Get random state
+   * ------------------------------------------------------------
+   * @name Random.saveState
+   * @return {Object} Random object for chaning
+   */
+
+  getState: function() {
+    return simpleStorage.get(this.storage_name);
+  },
+
+
+  /**
+   * Save random state
+   * ------------------------------------------------------------
+   * @name Random.saveState
+   * @return {Object} Random object for chaning
+   */
+
+  saveState: function(options) {
+    if (options == null) { options = {}; }
+
+    var that = this,
+        default_options = {
+          TTL: options.defaultTTL || that.options.defaultTTL // one day
+        };
+
+    // merge options
+    options = util.extend(default_options, options);
+
+    return simpleStorage.set( this.storage_name, this.source, options );
+  },
+
+
+  /**
+   * Delete random state
+   * ------------------------------------------------------------
+   * @name Random.saveState
+   * @return {Object} Random object for chaning
+   */
+
+  deleteState: function() {
+    return simpleStorage.deleteKey( this.storage_name );
+  },
+
+
+  /**
    * Reset random source
    * ------------------------------------------------------------
    * @name Random.reset
@@ -253,6 +324,7 @@ Random.prototype = {
   
   reset: function() {
     this.source = this.default_source.slice(0);
+    Random.doAutoSaveState(this);
     return this;
   },
 
@@ -268,6 +340,7 @@ Random.prototype = {
     var rollback_source = this.rollback_source.pop();
     if (rollback_source) {
       this.source = rollback_source;
+      Random.doAutoSaveState(this);
     }
     return this;
   },
@@ -295,6 +368,8 @@ Random.prototype = {
       output = this.source.slice(index, index + 1);
     }
 
+    Random.doAutoSaveState(this);
+
     return output[0];
   },
 
@@ -313,7 +388,6 @@ Random.prototype = {
     return output;
   }
 
-
 };
 
 
@@ -326,7 +400,7 @@ Random.prototype = {
 exports('Random', Random);
 
 
-}).call(this);
+}).call(this, simpleStorage);
 (function() {
 
 'use strict';
