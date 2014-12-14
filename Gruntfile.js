@@ -44,7 +44,27 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'src/scss',
-          src: ['main.scss'],
+          src: ['main.scss', 'test.scss'],
+          dest: 'src/css',
+          ext: '.css'
+        }]
+      }
+    },
+
+
+    /**
+     * ------------------------------------------------------------
+     * Auto prefix
+     * ------------------------------------------------------------
+     */
+    
+    autoprefixer: {
+      options: {},
+      main: {
+        files: [{
+          expand: true,
+          cwd: 'src/css',
+          src: ['main.css', 'test.css'],
           dest: 'src/css',
           ext: '.css'
         }]
@@ -91,7 +111,7 @@ module.exports = function(grunt) {
         files: [
           'src/scss/**/*.scss'
         ],
-        tasks: ['sass', 'csslint']
+        tasks: ['sass', 'autoprefixer', 'csslint']
       }
     },
 
@@ -182,6 +202,9 @@ module.exports = function(grunt) {
   // https://github.com/gruntjs/grunt-contrib-sass
   grunt.loadNpmTasks('grunt-contrib-sass');
 
+  // https://github.com/nDmitry/grunt-autoprefixer
+  grunt.loadNpmTasks('grunt-autoprefixer');
+
   // https://github.com/gruntjs/grunt-contrib-jshint
   grunt.loadNpmTasks('grunt-contrib-jshint');
 
@@ -195,7 +218,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 
-  grunt.registerTask('default', ['clean', 'sass', 'jshint', 'csslint']);
+  grunt.registerTask('default', ['clean', 'sass', 'autoprefixer', 'jshint', 'csslint']);
   grunt.registerTask('dev', ['default', 'watch']);
   grunt.registerTask('dist', ['default', 'concat', 'uglify', 'cssmin']);
 
