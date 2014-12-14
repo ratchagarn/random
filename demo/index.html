@@ -4,23 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demo</title>
+  <link rel="stylesheet" type="text/css" href="../src/css/main.css">
+  <link rel="stylesheet" type="text/css" href="../src/css/test.css">
 </head>
 <body>
 
-  <h1>DEMO Preview Here</h1>
-
-  <button id="do-pop">Pop</button>
-  <button id="do-rollback">Rollback</button>
-  <button id="do-reset">Reset</button>
-  <button id="do-save-state">Save State</button>
-  <button id="do-delete-state">Delete State</button>
-
-  <h2 id="pop-result"></h2>
-  <p id="source"></p>
+  <div id="galaxy">
+    <div id="sun" class='center-galaxy'></div>
+      <div class="center-galaxy null-ctrl-planet">
+        <div class="planet">
+          <div class="ground">K</div>
+        </div>
+      </div>
+  </div>
 
   <script src="../bower_components/jquery/dist/jquery.js"></script>
   <script src="../bower_components/simpleStorage/simpleStorage.js"></script>
-  <script src="../src/js/exports.js"></script>
+  <script src="../bower_components/transit/dist/transit.js"></script>
   <script src="../src/js/util.js"></script>
   <script src="../src/js/core.js"></script>
   <script src="../src/js/animation.js"></script>
