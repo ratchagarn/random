@@ -20,6 +20,7 @@
   "devDependencies": {
     "jquery": "2.1.1",
     "mousetrap": "1.4.6",
-    "simpleStorage": "0.1.2"
+    "simpleStorage": "0.1.2",
+    "transit": "*"
   }
 }

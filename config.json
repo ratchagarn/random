@@ -1,7 +1,7 @@
 {
   "sources": {
     "js": [
-      "src/js/exports.js",
+      "bower_components/transit/dist/transit.js",
       "src/js/util.js",
       "src/js/core.js",
       "src/js/animation.js",
