@@ -48,47 +48,35 @@ Animation.prototype = {
    * Add planet to stage
    * ------------------------------------------------------------
    * @name Animation.addPlanet
-   * @param {String} planet name
-   * @param {Number} deg for transform
-   * @param {Number} animation time
+   * @param {Object} setting
+   *        - {String} planet name
+   *        - {Number} deg for transform
+   *        - {Number} animation time
    */
   
-  addPlanet: function(name, deg, time) {
+  addPlanet: function(settings) {
 
-    if (deg == null) { deg = 0; }
-    if (time == null) { time = 5; }
+    var default_settings = {
+      deg: 0
+    };
+
+    settings = util.extend(default_settings, settings);
 
     var styles = [
-          'transform: rotateZ(' + deg + 'deg)',
+          'transform: rotateZ(' + settings.deg + 'deg)',
           // '-webkit-animation: orbit ' + time + 's infinite linear;',
-          'transform: rotateZ(' + (deg - (deg * 2)) + 'deg) translate3d(-50%,-50%,0);'
+          'transform: rotateZ(' + (settings.deg - (settings.deg * 2)) + 'deg) translate3d(-50%,-50%,0);'
         ],
-        id = 'planet-' + name,
+        id = 'planet-' + settings.name,
         tpl = '<div id="' + id + '" class="center-galaxy null-ctrl-planet" style="' + styles[0] + '">' +
-                '<div class="planet">' +
-                  '<div class="ground" style="' + styles[1] + '">' + name + '</div>' +
+                '<div class="planet" data-degx="0">' +
+                  '<div class="ground" style="' + styles[1] + '">' + settings.name + '</div>' +
                 '</div>' +
               '</div>',
         planet = util.parseHTML(tpl);
 
 
     this.stage.appendChild( planet );
-
-
-    var degx = 0;
-    var update = function() {
-      if (degx > 360) {
-        degx = 0;
-      }
-      document.getElementById(id).querySelector('.planet')
-        .style['webkitTransform'] = 'rotateY(' + degx + 'deg)' +
-                                    'translate3d(0, 0, 200px)' +
-                                    'rotateY(' + (degx - (degx * 2)) + 'deg)';
-      degx++;
-      requestAnimationFrame(update);
-    };
-
-    requestAnimationFrame(update);
   },
 
 
@@ -110,6 +98,41 @@ Animation.prototype = {
       targetPlanet.parentNode.removeChild(targetPlanet);
     }
 
+  },
+
+
+  /**
+   * Play planet animation
+   * ------------------------------------------------------------
+   * @name Animate.play
+   */
+  
+
+  play: function() {
+    var planets = document.querySelectorAll('.planet'),
+        degx = 0,
+        speed = [0.2, 0.4, 0.3, 0.5, 0.6, 0.1, 0.7, 0.8, 1, 0.9];
+
+    var update = function() {
+      for (var i = 0, len = planets.length; i < len; i++) {
+
+        var el = planets[i],
+            degx = parseFloat( el.getAttribute('data-degx') );
+
+        if (degx > 360) {
+          degx = 0;
+        }
+        el.style['webkitTransform'] = 'rotateY(' + degx + 'deg)' +
+                                      'translate3d(0, 0, 200px)' +
+                                      'rotateY(' + (degx * -1) + 'deg)';
+
+        el.setAttribute('data-degx', degx + speed[i]);
+      }
+
+      requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
   }
 
 };
