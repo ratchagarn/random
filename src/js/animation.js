@@ -63,7 +63,8 @@ Animation.prototype = {
           // '-webkit-animation: orbit ' + time + 's infinite linear;',
           'transform: rotateZ(' + (deg - (deg * 2)) + 'deg) translate3d(-50%,-50%,0);'
         ],
-        tpl = '<div id="planet-' + name + '" class="center-galaxy null-ctrl-planet" style="' + styles[0] + '">' +
+        id = 'planet-' + name,
+        tpl = '<div id="' + id + '" class="center-galaxy null-ctrl-planet" style="' + styles[0] + '">' +
                 '<div class="planet">' +
                   '<div class="ground" style="' + styles[1] + '">' + name + '</div>' +
                 '</div>' +
@@ -71,13 +72,23 @@ Animation.prototype = {
         planet = util.parseHTML(tpl);
 
 
-    var step = function() {
-      // requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-
-
     this.stage.appendChild( planet );
+
+
+    var degx = 0;
+    var update = function() {
+      if (degx > 360) {
+        degx = 0;
+      }
+      document.getElementById(id).querySelector('.planet')
+        .style['webkitTransform'] = 'rotateY(' + degx + 'deg)' +
+                                    'translate3d(0, 0, 200px)' +
+                                    'rotateY(' + (degx - (degx * 2)) + 'deg)';
+      degx++;
+      requestAnimationFrame(update);
+    };
+
+    requestAnimationFrame(update);
   },
 
 
