@@ -38,7 +38,7 @@ module.exports = function(grunt) {
     
     sass: {
       options: {
-        compass: true,
+        compass: false,
         sourcemap: 'file',
         style: 'expanded',
         cacheLocation: 'src/scss/.sass-cache'
