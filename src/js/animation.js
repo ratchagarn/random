@@ -71,7 +71,10 @@ Animation.prototype = {
         planet = util.parseHTML(tpl);
 
 
-    requestAnimationFrame();
+    var step = function() {
+      // requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
 
 
     this.stage.appendChild( planet );
