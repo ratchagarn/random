@@ -26,14 +26,12 @@ $.map(groups, function(item, i) {
 
   setTimeout(function() {
     random.addPlanet( item );
-  }, item.delay);
+  }, 100 * i);
 
 });
 
 
-setTimeout(function() {
-  random.play();
-});
+random.play( groups.length );
 
 
 window.random = random;

@@ -15,6 +15,7 @@ var global = this,
  * ------------------------------------------------------------
  */
 
+
 Random.extend( Animation.prototype );
 
 

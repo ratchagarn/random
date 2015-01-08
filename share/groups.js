@@ -10,13 +10,13 @@ var util = require('util'),
 G.forEach(function(name, i) {
 
   var deg = 36 * i,
-      time = util.rand(10, 12);
-  time += util.rand(0, 9) / 10;
+      delay = 150 * i;
 
   groups.push({
     name: name,
-    deg: deg,
-    time: time
+    deg: 180,
+    radius: 250,
+    delay: delay
   });
 
 });

@@ -1,5 +1,21 @@
 body {
-	background: url(../public/img/bg.jpg) no-repeat;
+	font-family: Arial Verdana Tahoma;
+	background: url(../public/img/bg.jpg) center top no-repeat;
+	background-size: 100%;
+}
+
+#logo {
+
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	width: 200px;
+	height: 200px;
+
+	img {
+		max-width: 100%;
+	}
+
 }
 
 #galaxy{
@@ -19,7 +35,7 @@ body {
 	background-color:orange;
 	border-radius:50%;
 	transform:translate3d(-50%,-50%,0);
-	box-shadow:0 0 40px orange;
+	box-shadow:0 0 20px orange;
 	-webkit-animation: aura 2s infinite linear alternate;
 }
 
@@ -48,6 +64,7 @@ body {
 	font-family: sans-serif;
 	line-height: 50px;
 	transform-origin:left top;
+	box-shadow:0 0 20px white;
 	// transform:rotateZ(-100deg) translate3d(-50%,-50%,0); // *2
 }
 
@@ -59,6 +76,6 @@ body {
 }
 
 @keyframes aura {
-    0%   {box-shadow:0 0 60px orange;}
+    0%   {box-shadow:0 0 20px orange;}
     100% {box-shadow:0 0 100px orange;}
 }

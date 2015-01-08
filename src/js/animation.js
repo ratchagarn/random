@@ -14,7 +14,7 @@ var global = this,
  */
 
 function Animation() {
-  this.stage = null;
+  this.init();
 }
 
 
@@ -26,6 +26,12 @@ function Animation() {
 
 Animation.prototype = {
 
+  init: function() {
+    this.stage = null,
+    this.total_planets = 0;
+  },
+
+
   /**
    * Set stage for random
    * ------------------------------------------------------------
@@ -35,6 +41,7 @@ Animation.prototype = {
   
   setup: function(id) {
     this.stage = document.getElementById(id);
+    this.total_planets = 0;
 
     var sun = document.createElement('div');
     sun.id = 'sun';
@@ -56,9 +63,12 @@ Animation.prototype = {
   
   addPlanet: function(settings) {
 
-    var default_settings = {
-      deg: 0
-    };
+    var that = this,
+        default_settings = {
+          deg: 0,
+          radius: 200,
+          delay: -1
+        };
 
     settings = util.extend(default_settings, settings);
 
@@ -69,14 +79,24 @@ Animation.prototype = {
         ],
         id = 'planet-' + settings.name,
         tpl = '<div id="' + id + '" class="center-galaxy null-ctrl-planet" style="' + styles[0] + '">' +
-                '<div class="planet" data-degx="0">' +
+                '<div class="planet" data-degx="0" data-radius="' + settings.radius + '">' +
                   '<div class="ground" style="' + styles[1] + '">' + settings.name + '</div>' +
                 '</div>' +
               '</div>',
         planet = util.parseHTML(tpl);
 
 
-    this.stage.appendChild( planet );
+    if (settings.delay === -1) {
+      this.stage.appendChild( planet );
+    }
+    else {
+      setTimeout(function() {
+        that.stage.appendChild( planet );
+      }, settings.delay);
+    }
+
+    this.total_planets++;
+
   },
 
 
@@ -107,23 +127,30 @@ Animation.prototype = {
    * @name Animate.play
    */
   
-
   play: function() {
-    var planets = document.querySelectorAll('.planet'),
+
+    var that = this,
+        planets = [],
         degx = 0,
-        speed = [0.2, 0.4, 0.3, 0.5, 0.6, 0.1, 0.7, 0.8, 1, 0.9];
+        // speed = [0.2, 0.4, 0.3, 0.5, 0.6, 0.1, 0.7, 0.8, 1, 0.9];
+        speed = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
 
     var update = function() {
+      if (planets.length < that.total_planets) {
+        planets = that.stage.querySelectorAll('.planet');
+      }
+
       for (var i = 0, len = planets.length; i < len; i++) {
 
         var el = planets[i],
-            degx = parseFloat( el.getAttribute('data-degx') );
+            degx = parseFloat( el.getAttribute('data-degx') ),
+            radius = parseFloat( el.getAttribute('data-radius') );
 
         if (degx > 360) {
           degx = 0;
         }
         el.style['webkitTransform'] = 'rotateY(' + degx + 'deg)' +
-                                      'translate3d(0, 0, 200px)' +
+                                      'translate3d(0, 0, ' + radius + 'px)' +
                                       'rotateY(' + (degx * -1) + 'deg)';
 
         el.setAttribute('data-degx', degx + speed[i]);
