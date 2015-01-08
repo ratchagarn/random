@@ -107,6 +107,9 @@ Random.prototype = {
    * ------------------------------------------------------------
    * @name Random.setOptions
    * @param {Object} options object for override
+   *                 - source: []
+   *                 - autoSaveState: false
+   *                 - defaultTTL: 86400000
    * @return {Object} Random object for chaning
    */
   

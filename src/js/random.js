@@ -5,27 +5,26 @@
 
 var global = this,
     Random = require('Random'),
+    Animation = require('Animation'),
     util = require('util');
 
 
 /**
  * ------------------------------------------------------------
- * Extend core prototype
+ * Extend Animation to core prototype
  * ------------------------------------------------------------
  */
 
-Random.extend({
+Random.extend( Animation.prototype );
 
-  hookInit: function() {
-    // load plugin animation
-    this.animation = new ( require('Animation') )();
-  },
 
-  play: function() {
-    console.log('Play');
-  }
+/**
+ * ------------------------------------------------------------
+ * Extend new method for random
+ * ------------------------------------------------------------
+ */
 
-});
+// Random.extend({});
 
 
 /**

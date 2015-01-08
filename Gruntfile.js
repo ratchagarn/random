@@ -23,7 +23,7 @@ module.exports = function(grunt) {
      */
     
     clean: {
-      sass_cache: '.sass-cache',
+      sass_cache: 'src/scss/.sass-cache',
       css: 'src/css',
       dev: 'dev',
       dist: 'dist'
@@ -37,9 +37,12 @@ module.exports = function(grunt) {
      */
     
     sass: {
-      // options: {
-      //   compass: true
-      // },
+      options: {
+        compass: true,
+        sourcemap: 'file',
+        style: 'expanded',
+        cacheLocation: 'src/scss/.sass-cache'
+      },
       main: {
         files: [{
           expand: true,
@@ -187,36 +190,20 @@ module.exports = function(grunt) {
   });
   
 
-  // https://github.com/gruntjs/grunt-contrib-clean
-  grunt.loadNpmTasks('grunt-contrib-clean');
+  /**
+   * ------------------------------------------------------------
+   * Load grunt task
+   * ------------------------------------------------------------
+   */
 
-  // https://github.com/gruntjs/grunt-contrib-concat
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  require('load-grunt-tasks')(grunt, { scope: 'devDependencies' });
 
-  // https://github.com/tschaub/grunt-newer
-  grunt.loadNpmTasks('grunt-newer');
 
-  // https://github.com/gruntjs/grunt-contrib-watch
-  grunt.loadNpmTasks('grunt-contrib-watch');
-
-  // https://github.com/gruntjs/grunt-contrib-sass
-  grunt.loadNpmTasks('grunt-contrib-sass');
-
-  // https://github.com/nDmitry/grunt-autoprefixer
-  grunt.loadNpmTasks('grunt-autoprefixer');
-
-  // https://github.com/gruntjs/grunt-contrib-jshint
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-
-  // https://github.com/gruntjs/grunt-contrib-csslint
-  grunt.loadNpmTasks('grunt-contrib-csslint');
-
-  // https://github.com/gruntjs/grunt-contrib-uglify
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-
-  // https://github.com/gruntjs/grunt-contrib-cssmin
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-
+  /**
+   * ------------------------------------------------------------
+   * Define grunt task
+   * ------------------------------------------------------------
+   */
 
   grunt.registerTask('default', ['clean', 'sass', 'autoprefixer', 'jshint', 'csslint']);
   grunt.registerTask('dev', ['default', 'watch']);
