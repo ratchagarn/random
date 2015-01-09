@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<title>SUN | YWC-12</title>
+		<style>
+			body{
+				-webkit-animation: shaking 0.8s infinite alternate;
+			}
+			#bg{
+				position:fixed;
+				width:120%;height:120%;
+				left:-10%;top:-10%;
+				z-index:-1;
+				background-image:url(../img/bg.jpg);
+				background-size:120%;
+				background-position:center;
+			}
+			#sun{
+				position: absolute;
+				left:0;top:0;bottom:0;right:0;
+				margin:auto;
+				width:0px;
+				height:0px;
+				-webkit-animation: swing 3s infinite alternate;
+			}
+			#sun-glow{
+				position: absolute;
+				left:0;top:0;
+				width:151px;height:151px;
+				background-color:orange;
+				border-radius:50%;
+				transform:translate3d(-50%,-50%,0);
+				-webkit-animation: aura 2s infinite alternate;
+			}
+			#sun-aura{
+				width:270px;height:270px;
+				background-image:url(../img/sun-aura.png);
+				background-repeat:no-repeat;
+				position: absolute;
+				left:0;top:0;
+				margin-left:-135px;
+				margin-top:-135px;
+				-webkit-animation: spin 1s infinite linear;
+			}
+			#sun-face{
+				width:270px;height:270px;
+				background-image:url(../img/sun-face.png);
+				background-repeat:no-repeat;
+				position: absolute;
+				left:0;top:0;
+				margin-left:-133px;
+				margin-top:-135px;
+			}
+			@-webkit-keyframes swing{
+				0%{transform:translate3d(0,-5px,0);}
+				100%{transform:translate3d(0,5px,0);}
+			}
+			@-webkit-keyframes aura{
+				0%{box-shadow:0 0 80px 5px orange;}
+				100%{box-shadow:0 0 140px 20px orange;}
+			}
+			@-webkit-keyframes spin{
+				0%{transform:rotate(0deg);}
+				100%{transform:rotate(360deg);}
+			}
+			@-webkit-keyframes shaking{
+				0% { -webkit-transform: translate(2px, 1px) rotate(0deg); }
+				10% { -webkit-transform: translate(-1px, -2px) rotate(-1deg); }
+				20% { -webkit-transform: translate(-3px, 0px) rotate(1deg); }
+				30% { -webkit-transform: translate(0px, 2px) rotate(0deg); }
+				40% { -webkit-transform: translate(1px, -1px) rotate(1deg); }
+				50% { -webkit-transform: translate(-1px, 2px) rotate(-1deg); }
+				60% { -webkit-transform: translate(-3px, 1px) rotate(0deg); }
+				70% { -webkit-transform: translate(2px, 1px) rotate(-1deg); }
+				80% { -webkit-transform: translate(-1px, -1px) rotate(1deg); }
+				90% { -webkit-transform: translate(2px, 2px) rotate(0deg); }
+				100% { -webkit-transform: translate(1px, -2px) rotate(-1deg); }
+			}
+		</style>
+	</head>
+	<body>
+		<div id="bg"></div>
+		<div id="sun">
+			<div id="sun-glow"></div>
+			<div id="sun-aura"></div>
+			<div id="sun-face"></div>
+		</div>
+
+	</body>
+</html>
