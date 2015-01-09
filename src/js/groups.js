@@ -9,19 +9,20 @@ var util = transit.require('util'),
 
 G.forEach(function(name, i) {
 
-  var deg = 36 * i,
-      delay = 100 * i,
+  var deg = 37 * i,
+      // delay = 10 * i,
+      delay = -1,
       // radius = util.rand(200, 400),
-      radius = 100 + (50 * (i + 1)),
+      radius = 200 + (50 * (i + 1)),
       // speed = util.rand(1, 4);
-      speed = util.rand(0, 1);
+      speed = 0;
 
-  speed += util.rand(0, 99) / 100;
+  deg += 36;
+  speed += util.rand(20, 99) / 100;
 
   groups.push({
     name: name,
-    deg: deg,
-    // deg: 180, // for center
+    deg: deg % 360,
     degx: 0, // for dynamic
     radius: radius,
     speed: speed,

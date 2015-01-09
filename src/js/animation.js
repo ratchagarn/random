@@ -1,4 +1,4 @@
-(function() {
+(function($) {
 
 'use strict';
 
@@ -28,9 +28,23 @@ function Animation() {
 Animation.prototype = {
 
   init: function() {
-    this.stage = null,
-    this.total_planets = 0;
-    this.animate_state = 'stop'; // stop/play
+    this._stage = null,
+    this._total_planets = 0;
+    this._deg_range = 0;
+    this._animate_state = 'play'; // play/pause
+    this._new_round = false;
+    this._html = document.getElementsByTagName('html')[0];
+
+    this._sfx = {
+      bg: new Audio('../src/public/sfx/bg.mp3'),
+      open: new Audio('../src/public/sfx/open.mp4'),
+      end: new Audio('../src/public/sfx/end.mp4'),
+      tik: new Audio('../src/public/sfx/tik.mp4')
+    };
+
+    this._sfx.open.loop = true;
+    this._sfx.bg.loop = true;
+    this._sfx.bg.play();
   },
 
 
@@ -42,14 +56,18 @@ Animation.prototype = {
    */
   
   setup: function(id) {
-    this.stage = document.getElementById(id);
-    this.total_planets = 0;
+    this._stage = document.getElementById(id);
+    this._total_planets = 0;
 
-    var sun = document.createElement('div');
-    sun.id = 'sun';
-    sun.className = 'center-galaxy';
+    var tpl = '<div id="sun">' +
+                '<div id="sun-glow"></div>' +
+                '<div id="sun-aura-slow" class="sun-aura spin-slow"></div>' +
+                '<div id="sun-aura-fast" class="sun-aura spin-fast"></div>' +
+                '<div id="sun-face"></div>' +
+              '</div>',
+        sun = util.parseHTML(tpl);
 
-    this.stage.appendChild(sun);
+    this._stage.appendChild(sun);
   },
 
 
@@ -67,6 +85,35 @@ Animation.prototype = {
       console.warn('Can\'t find planet node');
     }
     return node;
+  },
+
+
+  /**
+   * Get all planets element nodes
+   * ------------------------------------------------------------
+   * @name Animation.getAllPlanetNodes
+   * @param {Function} callback for node
+   */
+
+  getPlanetAllNodes: function(callback) {
+    var all_planets = this._stage.querySelectorAll('.planet-container');
+    for (var i = 0, len = all_planets.length; i < len; i++) {
+      callback( all_planets[i], i, groups[i] );
+    }
+  },
+
+
+  /**
+   * Get all planets settings
+   * ------------------------------------------------------------
+   * @name Animation.getAllPlanetsSettings
+   * @param {Function} callback for settings
+   */
+
+  getAllPlanetsSettings: function(callback) {
+    for (var i = 0; i < this._total_planets; i++) {
+      callback( groups[i], i );
+    }
   },
 
 
@@ -90,7 +137,7 @@ Animation.prototype = {
           speed: 1,
           delay: -1
         },
-        index = this.total_planets;
+        index = this._total_planets;
 
     settings = util.extend(default_settings, settings);
 
@@ -109,16 +156,16 @@ Animation.prototype = {
 
 
     if (settings.delay === -1) {
-      this.stage.appendChild( planet );
+      this._stage.appendChild( planet );
     }
     else {
       setTimeout(function() {
-        that.stage.appendChild( planet );
+        that._stage.appendChild( planet );
       }, settings.delay);
     }
 
-    this.total_planets++;
-
+    this._total_planets++;
+    this._deg_range = 360 / this._total_planets;
   },
 
 
@@ -174,51 +221,89 @@ Animation.prototype = {
    */
 
   shafflePlanet: function() {
-    groups.forEach(function(settings, i) {
-      var speed = util.rand(0, 1);
-      speed += util.rand(0, 99) / 100;
-      settings.deg = util.rand(36, 360);
-      settings.speed = speed;
-    });
 
-    var all_planets = this.stage.querySelectorAll('.planet-container');
-    for (var i = 0, len = all_planets.length; i < len; i++) {
-      var planet = all_planets[i];
-      planet.setAttribute('style', 'transform: rotateZ(' + groups[i].deg + 'deg)');
-      planet.querySelector('.ground')
-        .setAttribute('style', 'transform: rotateZ(' + (groups[i].deg * -1) + 'deg) translate3d(-50%,-50%,0);');
-    }
+    this._animate_state = 'play';
+
+    this.getAllPlanetsSettings(function(settings, i) {
+      // update settings
+      
+      // var speed = util.rand(1, 2),
+      var speed = 0,
+          deg = util.rand(36, 360),
+          radius = util.rand(200, 400);
+
+      speed += util.rand(0, 99) / 100;
+
+      TweenLite.to(settings, 1, {
+        deg: deg,
+        radius: radius,
+        speed: speed
+      });
+
+    });
 
   },
 
 
   /**
-   * Play planet animation
+   * Shake stage
    * ------------------------------------------------------------
-   * @name Animate.play
+   * @name Animate.shakeStage
    */
   
-  play: function() {
+  shakeStage: function() {
+    if ( !this._html.classList.contains('shake') ) {
+      this._html.classList.add('shake');
+      this._sfx.bg.pause();
+      this._sfx.bg.currentTime = 0;
+      this._sfx.open.play();
+    }
+  },
 
-    // set state to play
-    this.animate_state = 'play';
+
+   /**
+   * stop shake stage
+   * ------------------------------------------------------------
+   * @name Animate.stopShakeStage
+   */
+
+  stopShakeStage: function() {
+    this._html.classList.remove('shake');
+    this._sfx.open.pause();
+    this._sfx.open.currentTime = 0;
+    this._sfx.bg.play();
+  },
+
+
+  /**
+   * Start planet animation
+   * ------------------------------------------------------------
+   * @name Animate.ready
+   */
+  
+  ready: function() {
+
+    setTimeout(function() {
+      document.body.classList.add('fade-in');
+    }, 250);
 
     var that = this,
         planets = [];
 
     var update = function() {
 
-      // if state isn't play then do nothing but keep track animate
-      if (that.animate_state === 'play') {
+      if (that._animate_state !== 'out') {
 
-        if (planets.length < that.total_planets) {
-          planets = that.stage.querySelectorAll('.planet');
+        if (planets.length < that._total_planets || that._new_round) {
+          planets = that._stage.querySelectorAll('.planet-container');
+          that._new_round = false;
         }
 
         for (var i = 0, len = planets.length; i < len; i++) {
 
-          var el = planets[i],
+          var planet = planets[i],
               settings = groups[i],
+              deg = settings.deg,
               degx = settings.degx,
               radius = settings.radius,
               speed = settings.speed;
@@ -227,11 +312,15 @@ Animation.prototype = {
             degx = 0;
           }
 
-          el.style['webkitTransform'] = 'rotateY(' + degx + 'deg)' +
-                                        'translate3d(0, 0, ' + radius + 'px)' +
-                                        'rotateY(' + (degx * -1) + 'deg)';
+
+          planet.setAttribute('style', 'transform: rotateZ(' + deg + 'deg)');
+          planet.querySelector('.planet')
+            .setAttribute('style', 'transform: rotateY(' + degx + 'deg) translate3d(0, 0, ' + radius + 'px) rotateY(' + (degx * -1) + 'deg)');
+          planet.querySelector('.ground')
+            .setAttribute('style', 'transform: rotateZ(' + (deg * -1) + 'deg) translate3d(-50%,-50%,0);');
 
           settings.degx = degx + speed;
+
         }
 
       }
@@ -244,29 +333,213 @@ Animation.prototype = {
 
 
   /**
-   * Pause planet animation
+   * Random preparation
    * ------------------------------------------------------------
-   * @name Animate.pause
+   * @name Animation.steady
    */
 
-  pause: function() {
-    if (this.animate_state === 'pause') {
-      this.resume();
-    }
-    else {
-      this.animate_state = 'pause';
-    }
+  steady: function() {
+
+    this._animate_state = 'steady';
+    // document.getElementsByTagName('html')[0].classList.add('shake');
+
+    var that = this;
+
+    // this.pause();
+    this.getAllPlanetsSettings(function(settings, i) {
+      // update settings
+
+      TweenLite.to(settings, 2, {
+        deg: 180,
+        degx: 36 * i,
+        radius: 200,
+        speed: 0,
+        onComplete: function() {
+          that.pause();
+          that._stage.classList.add('random-steady');
+          setTimeout(function() {
+            that.shakeStage();
+            that.play(4, 10);
+          }, 1000);
+        }
+      });
+
+    });
+
+
+    // var that = this;
+
+    // this.pause();
+    // this._stage.classList.add('random-ready');
+
+    // this.getPlanetAllNodes(function(planet, i, settings) {
+    //   // update settings
+    //   settings.deg = 180;
+    //   settings.degx = 36 * i;
+    //   settings.radius = 200;
+    //   settings.speed = 2;
+
+    //   var deg = settings.deg,
+    //       degx = settings.degx,
+    //       radius = settings.radius;
+
+    //   planet.setAttribute('style', 'transform: rotateZ(' + deg + 'deg)');
+    //   planet.querySelector('.planet')
+    //     .setAttribute('style', 'transform: rotateY(' + degx + 'deg) translate3d(0, 0, ' + radius + 'px) rotateY(' + (degx * -1) + 'deg)');
+    //   planet.querySelector('.ground')
+    //     .setAttribute('style', 'transform: rotateZ(' + (deg * -1) + 'deg) translate3d(-50%,-50%,0);');
+    // });
+
+    // setTimeout(function() {
+    //   that._stage.classList.remove('random-ready');
+    //   that._stage.classList.add('random-steady');
+    //   setTimeout(function() {
+    //     that.resume();
+    //     that.getAllPlanetsSettings(function(settings) {
+    //       settings.speed = 0;
+    //       TweenLite.to(settings, 5, { speed: 6 });
+    //     });
+    //   }, 2000);
+    // }, 3500);
+
   },
 
 
   /**
-   * Resume planet animation
+   * Choice planet by stop animation
+   * ------------------------------------------------------------
+   * @name Animation.go
+   */
+
+  go: function() {
+    console.log('GO !!');
+    // if (this._animate_state !== 'steady') {
+    //   console.warn('Can\'t go! (play set Animation to state `steady` before go)');
+    //   return;
+    // }
+    var that = this,
+        stop = false,
+        recalulatePosition = function() {
+          that.stopShakeStage();
+          that._total_planets--;
+          that._deg_range = 360 / that._total_planets;
+          that.shafflePlanet();
+        },
+        updateFinalSettings = function() {
+
+          that.getAllPlanetsSettings(function(settings, i) {
+
+            var target_degx = Math.round( settings.degx / that._deg_range ) * that._deg_range;
+
+            TweenLite.to(settings, 1, {
+              degx: target_degx,
+              speed: 0,
+              onComplete: function() {
+
+                that._animate_state = 'out';
+                if (settings.degx === 0 || settings.degx === 360) {
+                  console.log('Random get ', settings.name);
+
+                  setTimeout(function() {
+                    var chosen_planet = that.getPlanetNode(settings.name);
+                    chosen_planet.classList.add('planet-out');
+                    that._sfx.open.pause();
+                    that._sfx.open.currentTime = 0;
+                    that._sfx.end.play();
+
+                    setTimeout(function() {
+                      that._new_round = true;
+                      chosen_planet.parentNode.removeChild(chosen_planet);
+                      recalulatePosition();
+                    }, 1000);
+
+                  }, 1000);
+
+                }
+
+              }
+            });
+
+          });
+
+        };
+
+    this.pause(1, 0.5, function() {
+      console.log('Go finish !');
+
+      if (!stop) {
+        stop = true;
+        that._stage.classList.remove('random-steady');
+        updateFinalSettings();
+      }
+
+    });
+  },
+
+
+  /**
+   * Play planet animation
+   * ------------------------------------------------------------
+   * @name Animation.play
+   * @param {Number} speed duration
+   * @param {Number} animation speed
+   */
+
+  play: function(duration, speed) {
+    if (duration == null) { duration = 1; }
+    if (speed == null) { speed = 1; }
+
+    this._animate_state = 'play';
+    this.getAllPlanetsSettings(function(settings, i) {
+      TweenLite.to(settings, duration, { speed: speed });
+    });
+  },
+
+
+  /**
+   * Pause planet animation
+   * ------------------------------------------------------------
+   * @name Animation.pause
+   * @param {Number} reduce speed duration
+   * @param {Number} lastest speed
+   * @param {Function} callback fire after pause animation finish
+   */
+
+  pause: function(duration, speed, callback) {
+    // if (this._animate_state === 'steady') {
+    //   console.warn('Can\'t stop! (Animation is `steady` state)');
+    //   return;
+    // }
+
+    if (duration == null) { duration = 1; }
+    if (speed == null) { speed = 0; }
+
+    var that = this;
+
+    if (this._animate_state === 'pause') {
+      this.resume();
+    }
+    else {
+      this.getAllPlanetsSettings(function(settings, i) {
+        TweenLite.to(settings, duration, {
+          speed: speed,
+          onComplete: function() {
+            that._animate_state = 'pause';
+            (callback || util.noop)();
+          }
+        });
+      });
+    }
+  },
+
+  /**
+   * Resume planet animation (alias of method play)
    * ------------------------------------------------------------
    * @name Animate.resume
    */
 
   resume: function() {
-    this.animate_state = 'play';
+    this.play();
   }
 
 };
@@ -281,4 +554,4 @@ Animation.prototype = {
 transit.exports('Animation', Animation);
 
 
-}).call(this);
+}).call(this, jQuery);

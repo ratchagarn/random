@@ -2,9 +2,10 @@
 
 'use strict';
 
-var util = require('util'),
-    groups = require('groups'),
-    random = new Random();
+var util = transit.require('util'),
+    groups = transit.require('groups'),
+    random = new ( transit.require('Random') )(),
+    anim = new ( transit.require('Animation') )();
 
 
 /**
@@ -13,7 +14,7 @@ var util = require('util'),
  * ------------------------------------------------------------
  */
 
-random.setup('galaxy');
+anim.setup('galaxy');
 
 
 /**
@@ -24,14 +25,41 @@ random.setup('galaxy');
 
 $.map(groups, function(item, i) {
 
-  setTimeout(function() {
-    random.addPlanet( item.name, item.deg, item.time );
-  }, item.delay);
+  anim.addPlanet( item );
 
 });
 
 
-window.random = random;
+anim.ready();
+
+
+// for programatic
+window.anim = anim;
+
+
+/**
+ * ------------------------------------------------------------
+ * Bind shortkey
+ * ------------------------------------------------------------
+ */
+
+
+Mousetrap.bind('space', function() {
+  anim.steady();
+});
+
+Mousetrap.bind('r', function() {
+  anim.go();
+});
+
+Mousetrap.bind('p', function() {
+  anim.pause();
+});
+
+Mousetrap.bind('s', function() {
+  anim.shafflePlanet();
+});
+
 
 
 }).call(this);
