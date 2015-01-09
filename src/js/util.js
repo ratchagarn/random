@@ -160,7 +160,7 @@ var util = (function(context) {
  * ------------------------------------------------------------
  */
 
-exports('util', util);
+transit.exports('util', util);
 
 
 }).call(this);

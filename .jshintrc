@@ -23,6 +23,8 @@
     "Random": true,
     "jQuery": true,
     "Mousetrap": true,
-    "simpleStorage": true
+    "simpleStorage": true,
+    "transit": true,
+    "TweenLite": true
   }
 }
