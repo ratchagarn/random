@@ -21,11 +21,8 @@
     "jquery": "2.1.1",
     "mousetrap": "1.4.6",
     "simpleStorage": "0.1.2",
-    "transit": "*",
+    "transit": "0.2.0",
     "motio": "2.2.2",
     "greensock": "1.15.0"
-  },
-  "dependencies": {
-    "transit": "0.1.5"
   }
 }
