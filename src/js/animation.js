@@ -341,7 +341,15 @@ Animation.prototype = {
     }
     this._animate_state = 'steady';
 
-    var that = this;
+    var that = this,
+        n = [];
+
+    groups.forEach(function(item, i) {
+      n.push(i);
+    });
+
+    n = util.shuffle(n);
+    console.log(n);
 
     // this.pause();
     this.getAllPlanetsSettings(function(settings, i) {
@@ -349,7 +357,7 @@ Animation.prototype = {
 
       TweenLite.to(settings, 2, {
         deg: 180,
-        degx: that._deg_range * i,
+        degx: that._deg_range * n[i],
         radius: 200,
         speed: 0,
         onComplete: function() {
@@ -357,7 +365,7 @@ Animation.prototype = {
           that._stage.classList.add('random-steady');
           setTimeout(function() {
             that.shakeStage();
-            that.play(1, 10, function() {
+            that.play(0.5, 10, function() {
               console.log('Ready for Chosen one !!');
             });
           }, 1000);
