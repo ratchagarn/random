@@ -68,7 +68,6 @@ Random.prototype = {
   
 
   init: function() {
-    console.log('Init random !');
 
     var default_options = {
           source: [],
@@ -81,11 +80,11 @@ Random.prototype = {
     this.source = this.options.source.slice(0);
 
     // resume state if avaliable
-    if (random_source_state) {
+    if (random_source_state && random_source_state.length > 0) {
       this.source = random_source_state.slice(0);
     }
     // for init 2nd+
-    else if (this.default_source) {
+    else if (this.default_source && this.default_source.length > 0) {
       this.source = this.default_source.slice(0);
     }
 
@@ -96,7 +95,6 @@ Random.prototype = {
     if (typeof this.hookInit === 'function') {
       this.hookInit.call(this);
     }
-
 
     return this;
   },
@@ -115,7 +113,20 @@ Random.prototype = {
   
   setOptions: function(options) {
     this.options = util.extend(this.options, options);
+    this.init();
     return this;
+  },
+
+
+  /**
+   * Get random sources
+   * ------------------------------------------------------------
+   * @name Random.getSources
+   * @return {Array} random sources
+   */
+
+  getSource: function() {
+    return this.source;
   },
 
 
@@ -175,6 +186,20 @@ Random.prototype = {
   reset: function() {
     this.source = this.default_source.slice(0);
     Random.doAutoSaveState(this);
+    return this;
+  },
+
+
+  /**
+   * Clear all random sources
+   * ------------------------------------------------------------
+   * @name Random.clear
+   * @return {Object} Random object for chaning
+   */
+
+  clear: function() {
+    this.source = [];
+    simpleStorage.flush();
     return this;
   },
 

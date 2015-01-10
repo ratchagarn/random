@@ -5,7 +5,8 @@
 
 var global = this,
     util = transit.require('util'),
-    groups = transit.require('groups');
+    groups = transit.require('groups'),
+    random = transit.require('_random');
 
 
 /**
@@ -407,6 +408,8 @@ Animation.prototype = {
                   setTimeout(function() {
 
                     that.removePlanet(settings.name, i, function() {
+                      random.popByIndex(i);
+                      console.log(random.source);
                       recalulatePosition();
                     });
 
@@ -430,7 +433,8 @@ Animation.prototype = {
     this._animate_state = 'play';
 
     // duration, speed
-    this.pause(3, 0.5, function() {
+    var duration = util.rand( 5, 7 );
+    this.pause(duration, 0.5, function() {
       if (!stop) {
         console.log('Go finish !');
         stop = true;
