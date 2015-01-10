@@ -133,7 +133,7 @@ body {
 	font-family: sans-serif;
 	line-height: 50px;
 	transform-origin:left top;
-	box-shadow:0 0 20px white;
+	box-shadow:0 0 40px rgba(255, 255, 255, .7);
 	backface-visibility: hidden;
 	// transition: 2s;
 	// transform:rotateZ(-100deg) translate3d(-50%,-50%,0); // *2
@@ -187,11 +187,11 @@ body {
 	transition: 1s;
 
 	&.spin-slow {
-		animation: spin 10s infinite linear;
+		animation: spin 12s infinite linear;
 	}
 	&.spin-fast {
 		opacity: 0;
-		animation: spin 2s infinite linear;
+		animation: spin 1s infinite linear;
 	}
 }
 #sun-face{

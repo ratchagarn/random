@@ -49,6 +49,7 @@ Mousetrap.bind('space', function() {
 });
 
 Mousetrap.bind('r', function() {
+  console.log('PRESS `R`')
   anim.go();
 });
 
@@ -57,7 +58,7 @@ Mousetrap.bind('p', function() {
 });
 
 Mousetrap.bind('s', function() {
-  anim.shafflePlanet();
+  anim.shufflePlanet();
 });
 
 
