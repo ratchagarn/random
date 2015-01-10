@@ -105,6 +105,62 @@ var util = (function(context) {
       // nulling out the reference, there is no obvious dispose method
       temp = null;
       return frag;
+    },
+
+
+    /**
+     * Shuffle array
+     * see: http://phpjs.org/functions/shuffle/
+     * ------------------------------------------------------------
+     * @name util.shuffle
+     * @param {Array} Array for shuffle
+     */
+
+    shuffle: function(inputArr) {
+      //   example 1: ini_set('phpjs.strictForIn', true);
+      //   example 1: shuffle(data);
+      //   example 1: $result = data;
+      //   returns 1: {5:'a', 4:5, 'q':5, 3:'c', 2:'3'}
+      //   example 2: var data = {5:'a', 2:'3', 3:'c', 4:5, 'q':5};
+      //   example 2: ini_set('phpjs.strictForIn', true);
+      //   example 2: var data = {5:'a', 2:'3', 3:'c', 4:5, 'q':5};
+      //   example 2: shuffle(data);
+      //   example 2: $result = data;
+      //   returns 2: {5:'a', 'q':5, 3:'c', 2:'3', 4:5}
+
+      var valArr = [],
+        k = '',
+        i = 0,
+        strictForIn = false,
+        populateArr = [];
+
+      for (k in inputArr) {
+        // Get key and value arrays
+        if (inputArr.hasOwnProperty(k)) {
+          valArr.push(inputArr[k]);
+          if (strictForIn) {
+            delete inputArr[k];
+          }
+        }
+      }
+      valArr.sort(function () {
+        return 0.5 - Math.random();
+      });
+
+      // BEGIN REDUNDANT
+      this.php_js = this.php_js || {};
+      this.php_js.ini = this.php_js.ini || {};
+      // END REDUNDANT
+      strictForIn = this.php_js.ini['phpjs.strictForIn'] && this.php_js.ini['phpjs.strictForIn'].local_value && this.php_js
+        .ini['phpjs.strictForIn'].local_value !== 'off';
+      populateArr = strictForIn ? inputArr : populateArr;
+
+      for (i = 0; i < valArr.length; i++) {
+        // Repopulate the old array
+        populateArr[i] = valArr[i];
+      }
+
+      return strictForIn || populateArr;
     }
 
   };
