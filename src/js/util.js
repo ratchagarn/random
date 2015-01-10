@@ -109,6 +109,29 @@ var util = (function(context) {
 
 
     /**
+     * Check duplicate value in array
+     * ------------------------------------------------------------
+     * @name util.checkArrayDup
+     * @param {Array} Array for check duplicatie
+     * @return {Number} Index of array at duplicate
+     */
+
+    checkArrayDup: function(arr) {
+      var dup_index = -1;
+      for (var i = 0, len_i = arr.length; i < len_i; i++) {
+        var current_value = arr[i];
+        for (var j = 0, len_j = arr.length; j < len_j; j++) {
+          if (i !== j && current_value === arr[j]) {
+            dup_index = j;
+            return dup_index;
+          }
+        }
+      }
+      return dup_index;
+    },
+
+
+    /**
      * Shuffle array
      * see: http://phpjs.org/functions/shuffle/
      * ------------------------------------------------------------

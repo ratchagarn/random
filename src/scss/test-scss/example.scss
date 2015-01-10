@@ -161,6 +161,7 @@ body {
 	animation: swing 3s infinite alternate;
 	z-index: 1;
 	backface-visibility: hidden;
+	transform-style: preserve-3d;
 
 	> * {
 		backface-visibility: hidden;

@@ -389,22 +389,41 @@ Animation.prototype = {
         stop = false,
         updateFinalSettings = function() {
 
-          that.getAllPlanetsSettings(function(settings, i) {
+          var all_target_degx = [];
 
+          that.getAllPlanetsSettings(function(settings, i) {
             // var target_degx = Math.ceil( settings.degx / that._deg_range ) * that._deg_range;
             var target_degx = (settings.degx - (settings.degx % that._deg_range) + that._deg_range);
-            if (target_degx > 360) {
-              target_degx = 360;
-            }
+            all_target_degx.push(target_degx);
+          });
+
+
+          // fixed duplicate 
+          var dup_index = util.checkArrayDup( all_target_degx );
+          if (dup_index > -1) {
+            console.error('DUUPPPPPP !', dup_index);
+            // all_target_degx[dup_index] += that._deg_range;
+            var max = _.max(all_target_degx),
+                index = all_target_degx.indexOf(max);
+            all_target_degx[index] = 360;
+          }
+
+          var found_out = false;
+
+          that.getAllPlanetsSettings(function(settings, i) {
 
             TweenLite.to(settings, 1, {
-              degx: target_degx,
+              degx: all_target_degx[i],
               speed: 0,
               onComplete: function() {
 
+                if (found_out) { return; }
+
                 that._animate_state = 'out';
                 console.log(settings.name, '====>', settings.degx);
-                if (settings.degx === 360) {
+                // if (settings.degx === 360) {
+                if (settings.degx >= 360) {
+                  found_out = true;
                   console.log('Random get ', settings.name);
 
                   that._new_round = true;
@@ -423,8 +442,8 @@ Animation.prototype = {
 
               }
             });
-
           });
+
         },
         recalulatePosition = function() {
           that.stopShakeStage();

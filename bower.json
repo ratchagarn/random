@@ -23,6 +23,7 @@
     "simpleStorage": "0.1.2",
     "transit": "0.2.0",
     "motio": "2.2.2",
-    "greensock": "1.15.0"
+    "greensock": "1.15.0",
+    "lodash": "2.4.1"
   }
 }

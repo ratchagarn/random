@@ -55,7 +55,7 @@ window.GOD = function(request_message) {
       random.clear();
       setTimeout(function() {
         window.location.reload();
-      });
+      }, 500);
       break;
 
 

@@ -25,6 +25,7 @@
     "Mousetrap": true,
     "simpleStorage": true,
     "transit": true,
-    "TweenLite": true
+    "TweenLite": true,
+    "_": true
   }
 }
