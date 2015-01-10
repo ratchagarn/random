@@ -342,14 +342,13 @@ Animation.prototype = {
     this._animate_state = 'steady';
 
     var that = this,
-        n = [];
+        index_shuffle = [];
 
     groups.forEach(function(item, i) {
-      n.push(i);
+      index_shuffle.push(i);
     });
 
-    n = util.shuffle(n);
-    console.log(n);
+    index_shuffle = util.shuffle(index_shuffle);
 
     // this.pause();
     this.getAllPlanetsSettings(function(settings, i) {
@@ -357,7 +356,7 @@ Animation.prototype = {
 
       TweenLite.to(settings, 2, {
         deg: 180,
-        degx: that._deg_range * n[i],
+        degx: (that._deg_range * index_shuffle[i]) % 360,
         radius: 200,
         speed: 0,
         onComplete: function() {
@@ -365,8 +364,8 @@ Animation.prototype = {
           that._stage.classList.add('random-steady');
           setTimeout(function() {
             that.shakeStage();
-            that.play(0.5, 10, function() {
-              console.log('Ready for Chosen one !!');
+            that.play(4, 10, function() {
+              // console.log('Ready for Chosen one !!');
             });
           }, 1000);
         }
@@ -427,9 +426,11 @@ Animation.prototype = {
           that.shufflePlanet();
         };
 
+    // hot fixed bug (force animation state to `play`)
+    this._animate_state = 'play';
 
     // duration, speed
-    this.pause(1, 0.5, function() {
+    this.pause(3, 0.5, function() {
       if (!stop) {
         console.log('Go finish !');
         stop = true;
@@ -493,9 +494,9 @@ Animation.prototype = {
       this.getAllPlanetsSettings(function(settings, i) {
         TweenLite.to(settings, duration, {
           speed: speed,
-          onUpdate: function() {
-            console.log('Update pause !');
-          },
+          // onUpdate: function() {
+          //   console.log('Update pause !');
+          // },
           onComplete: function() {
             that._animate_state = 'pause';
             (callback || util.noop)();
