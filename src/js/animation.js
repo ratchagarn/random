@@ -166,7 +166,7 @@ Animation.prototype = {
     }
 
     this._total_planets++;
-    this._deg_range = 360 / this._total_planets;
+    this._deg_range = Math.ceil(360 / this._total_planets);
   },
 
 
@@ -391,7 +391,11 @@ Animation.prototype = {
 
           that.getAllPlanetsSettings(function(settings, i) {
 
-            var target_degx = Math.ceil( settings.degx / that._deg_range ) * that._deg_range;
+            // var target_degx = Math.ceil( settings.degx / that._deg_range ) * that._deg_range;
+            var target_degx = (settings.degx - (settings.degx % that._deg_range) + that._deg_range);
+            if (target_degx > 360) {
+              target_degx = 360;
+            }
 
             TweenLite.to(settings, 1, {
               degx: target_degx,
@@ -425,7 +429,7 @@ Animation.prototype = {
         recalulatePosition = function() {
           that.stopShakeStage();
           that._total_planets--;
-          that._deg_range = 360 / that._total_planets;
+          that._deg_range = Math.ceil(360 / that._total_planets);
           that.shufflePlanet();
         };
 

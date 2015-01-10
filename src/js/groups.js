@@ -5,6 +5,7 @@
 var util = transit.require('util'),
     Random = transit.require('Random'),
     GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+    // GROUPS = ['A', 'B', 'C', 'D', 'E'],
     groups = [],
     options = {
       autoSaveState: true
