@@ -366,42 +366,6 @@ Animation.prototype = {
 
     });
 
-
-    // var that = this;
-
-    // this.pause();
-    // this._stage.classList.add('random-ready');
-
-    // this.getPlanetAllNodes(function(planet, i, settings) {
-    //   // update settings
-    //   settings.deg = 180;
-    //   settings.degx = 36 * i;
-    //   settings.radius = 200;
-    //   settings.speed = 2;
-
-    //   var deg = settings.deg,
-    //       degx = settings.degx,
-    //       radius = settings.radius;
-
-    //   planet.setAttribute('style', 'transform: rotateZ(' + deg + 'deg)');
-    //   planet.querySelector('.planet')
-    //     .setAttribute('style', 'transform: rotateY(' + degx + 'deg) translate3d(0, 0, ' + radius + 'px) rotateY(' + (degx * -1) + 'deg)');
-    //   planet.querySelector('.ground')
-    //     .setAttribute('style', 'transform: rotateZ(' + (deg * -1) + 'deg) translate3d(-50%,-50%,0);');
-    // });
-
-    // setTimeout(function() {
-    //   that._stage.classList.remove('random-ready');
-    //   that._stage.classList.add('random-steady');
-    //   setTimeout(function() {
-    //     that.resume();
-    //     that.getAllPlanetsSettings(function(settings) {
-    //       settings.speed = 0;
-    //       TweenLite.to(settings, 5, { speed: 6 });
-    //     });
-    //   }, 2000);
-    // }, 3500);
-
   },
 
 
@@ -439,7 +403,7 @@ Animation.prototype = {
                       recalulatePosition();
                     });
 
-                  }, 1000);
+                  }, 1500);
 
                 }
 
