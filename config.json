@@ -1,11 +1,17 @@
 {
   "sources": {
     "js": [
+      "bower_components/lodash/dist/lodash.compat.js",
+      "bower_components/greensock/src/uncompressed/easing/EasePack.js",
+      "bower_components/greensock/src/uncompressed/TweenLite.js",
+      "bower_components/jquery/dist/jquery.js",
+      "bower_components/simpleStorage/simpleStorage.js",
       "bower_components/transit/dist/transit.js",
+      "bower_components/mousetrap/mousetrap.js",
       "src/js/util.js",
-      "src/js/core.js",
-      "src/js/animation.js",
-      "src/js/random.js"
+      "src/js/random.js",
+      "src/js/groups.js",
+      "src/js/animation.js"
     ]
   }
 }

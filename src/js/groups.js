@@ -4,8 +4,7 @@
 
 var util = transit.require('util'),
     Random = transit.require('Random'),
-    GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
-    // GROUPS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    GROUPS = window._GROUPS,
     groups = [],
     options = {
       autoSaveState: true
@@ -22,7 +21,7 @@ random.setOptions({
   source: GROUPS
 });
 
-random.getSource().forEach(function(name, i) {
+random.getSource().forEach(function(item, i) {
 
   var deg = 37 * i,
       // delay = 10 * i,
@@ -36,7 +35,8 @@ random.getSource().forEach(function(name, i) {
   speed += util.rand(20, 99) / 100;
 
   groups.push({
-    name: name,
+    name: item.name,
+    project: item.project,
     deg: deg % 360,
     degx: 0, // for dynamic
     radius: radius,

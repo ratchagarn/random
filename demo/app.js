@@ -8,6 +8,9 @@ var util = transit.require('util'),
     anim = new ( transit.require('Animation') )();
 
 
+window.groups = groups;
+
+
 /**
  * ------------------------------------------------------------
  * Setup stage
@@ -71,6 +74,10 @@ window.GOD = function(request_message) {
 
 }
 
+
+setTimeout(function() {
+  anim.showMessage('Young Webmaster Camp 12 - ค่ายเจาะลึกวิชาชีพ เว็บมาสเตอร์', 3000);
+}, 2000);
 
 
 /**

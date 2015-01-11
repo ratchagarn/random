@@ -34,18 +34,22 @@ Animation.prototype = {
     this._deg_range = 0;
     this._animate_state = 'play'; // play/pause
     this._new_round = false;
-    this._html = document.getElementsByTagName('html')[0];
+    this._ready_to_go = false;
+    this._html = document.getElementsByTagName('html')[0],
+    this._body = document.body;
 
     this._sfx = {
-      bg: new Audio('../src/public/sfx/bg.mp3'),
-      open: new Audio('../src/public/sfx/open.mp4'),
-      end: new Audio('../src/public/sfx/end.mp4'),
-      tik: new Audio('../src/public/sfx/tik.mp4')
+      bg: new Audio('src/public/sfx/bg.mp3'),
+      open: new Audio('src/public/sfx/open.mp4'),
+      end: new Audio('src/public/sfx/end.mp4'),
+      tik: new Audio('src/public/sfx/tik.mp4')
     };
 
     this._sfx.open.loop = true;
-    this._sfx.bg.loop = true;
+    // this._sfx.bg.loop = true;
     this._sfx.bg.play();
+
+    this.restoreLobby();
   },
 
 
@@ -181,7 +185,8 @@ Animation.prototype = {
   
   removePlanet: function(name, index, callback) {
 
-    var targetPlanet = this.getPlanetNode(name);
+    var that = this,
+        targetPlanet = this.getPlanetNode(name);
     if (targetPlanet) {
 
       // do animate remove node before remove element
@@ -191,6 +196,9 @@ Animation.prototype = {
       this._sfx.end.play();
 
       setTimeout(function() {
+
+        // set lobby
+        that.toLobby(name);
 
         // remove setting
         groups.splice(index, 1);
@@ -219,7 +227,7 @@ Animation.prototype = {
 
     this._animate_state = 'play';
     this.stopShakeStage();
-    this._stage.classList.remove('random-steady');
+    this._body.classList.remove('random-steady');
 
     this.getAllPlanetsSettings(function(settings, i) {
       // update settings
@@ -227,7 +235,7 @@ Animation.prototype = {
       // var speed = util.rand(1, 2),
       var speed = 0,
           deg = util.rand(36, 360),
-          radius = 200 + (util.rand(10, 30) * (i + 1));
+          radius = 200 + (30 * (i + 1));
 
       speed += util.rand(20, 99) / 100;
 
@@ -362,11 +370,12 @@ Animation.prototype = {
         speed: 0,
         onComplete: function() {
           that.pause();
-          that._stage.classList.add('random-steady');
+          that._body.classList.add('random-steady', 'clean-view');
           setTimeout(function() {
             that.shakeStage();
-            that.play(4, 10, function() {
+            that.play(3, 10, function() {
               // console.log('Ready for Chosen one !!');
+              that._ready_to_go = true;
             });
           }, 1000);
         }
@@ -385,6 +394,18 @@ Animation.prototype = {
 
   go: function() {
 
+    if (!this._ready_to_go) {
+      console.warn('Set random to `steady` state before `go`');
+      return;
+    }
+    else {
+      this._ready_to_go = false;
+    }
+
+    console.log('Fire `GO` method !');
+
+    this._sfx.tik.play();
+
     var that = this,
         stop = false,
         updateFinalSettings = function() {
@@ -401,13 +422,13 @@ Animation.prototype = {
           // fixed duplicate 
           var dup_index = util.checkArrayDup( all_target_degx );
           if (dup_index > -1) {
-            console.error('DUUPPPPPP !', dup_index);
+            // console.error('DUUPPPPPP !', dup_index);
             // all_target_degx[dup_index] += that._deg_range;
             var max = _.max(all_target_degx),
                 index = all_target_degx.indexOf(max);
             all_target_degx[index] = 360;
           }
-
+          
           var found_out = false;
 
           that.getAllPlanetsSettings(function(settings, i) {
@@ -433,7 +454,10 @@ Animation.prototype = {
                     that.removePlanet(settings.name, i, function() {
                       random.popByIndex(i);
                       console.log(random.source);
-                      recalulatePosition();
+                      that.stopShakeStage();
+                      that.showMessage(settings.project, 3000, function() {
+                        recalulatePosition();
+                      });
                     });
 
                   }, 1500);
@@ -446,7 +470,7 @@ Animation.prototype = {
 
         },
         recalulatePosition = function() {
-          that.stopShakeStage();
+          that._body.classList.remove('clean-view');
           that._total_planets--;
           that._deg_range = Math.ceil(360 / that._total_planets);
           that.shufflePlanet();
@@ -461,8 +485,14 @@ Animation.prototype = {
       if (!stop) {
         console.log('Go finish !');
         stop = true;
-        that._stage.classList.remove('random-steady');
-        updateFinalSettings();
+
+        var delay_times = [2000, 3000, 4000, 5000, 6000, 7000],
+            delay = delay_times[ util.rand( 0, delay_times.length ) ];
+
+        setTimeout(function() {
+          that._body.classList.remove('random-steady');
+          updateFinalSettings();
+        }, delay );
       }
 
     });
@@ -541,7 +571,70 @@ Animation.prototype = {
 
   resume: function() {
     this.play();
+  },
+
+
+  /**
+   * Show message
+   * ------------------------------------------------------------
+   * @name Animate.showMessage
+   * @param {String} Message text
+   * @param {Number} Display duration
+   * @param {Function} Callback function fire after display message finish
+   */
+  
+  showMessage: function(text, duration, callback) {
+    var $message = $( document.getElementById('message') );
+    $message.text(text).addClass('go-in');
+    setTimeout(function() {
+      $message.addClass('go-out');
+
+      // fire callback
+      ( callback || util.noop )();
+
+      setTimeout(function() {
+        $message.removeClass();
+      }, 250);
+    }, duration + 500);
+  },
+
+
+  /**
+   * Set chosen group to lobby
+   * ------------------------------------------------------------
+   * @name Animate.toLobby
+   * @param {String} group name
+   */
+  
+  toLobby: function(name) {
+    var $target = $( document.getElementById( 'group-' + name.toLowerCase() ) );
+    $target.addClass('active current').siblings().removeClass('current');
+  },
+
+
+  /**
+   * Restore lobby from localstorage
+   * ------------------------------------------------------------
+   * @name Animate.restoreLobby
+   */
+  
+  restoreLobby: function() {
+
+    var state = random.getState();
+
+    if ( state && state.length > 0 ) {
+      var that = this,
+          diff_groups = _.difference(
+                          ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+                          state
+                        );
+
+      diff_groups.forEach(function(name, i) {
+        that.toLobby(name);
+      });
+    }
   }
+  
 
 };
 

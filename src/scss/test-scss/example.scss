@@ -1,5 +1,22 @@
-$base_img_path: "../public";
-// $base_img_path: "/src/public";
+$source_path: "../public";
+// $source_path: "/src/public";
+
+
+@font-face {
+	font-family: 'quarklight';
+	src: url('#{$source_path}/fonts/quark-light-webfont.eot');
+	src: url('#{$source_path}/fonts/quark-light-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('#{$source_path}/fonts/quark-light-webfont.woff') format('woff'),
+	     url('#{$source_path}/fonts/quark-light-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+* {
+	pointer-events: none;
+  user-select: none;
+}
+
 
 html, body {
 	overflow: hidden;
@@ -13,9 +30,10 @@ body {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	font-family: Arial Verdana Tahoma;
+	font-family: quarklight;
+	font-size: 16px;
 	opacity: 0;
-	background:url(#{$base_img_path}/img/bg.jpg) no-repeat;
+	background:url(#{$source_path}/img/bg.jpg) no-repeat;
 	background-size:140%;
 	background-position:center;
 
@@ -47,6 +65,8 @@ body {
 
 #logo {
 
+	transition: 1s;
+
 	position: absolute;
 	top: 20px;
 	left: 20px;
@@ -60,16 +80,94 @@ body {
 
 }
 
+#signature {
+	position: absolute;
+	bottom: 20px;
+	right: 20px;
+	color: white;
+	opacity: .1;
+	text-align: right;
+	font-size: 12px;
+	transition: 1s;
+}
+
+#lobby {
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+	transition: 1s;
+
+	.group {
+		display: inline-block;
+		font-size: 24px;
+		margin: 0 5px;
+		color: white;
+		opacity: 0.05;
+		transition: 3s;
+
+		&.active {
+			opacity: .5;
+		}
+
+		&.current {
+			color: orange;
+			font-weight: bold;
+			opacity: 1;
+		}
+
+	}
+}
+
+
+#message {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	padding: 100px 0;
+	margin-top: -100px;
+	background-color: rgba(0, 0, 0, 0.3);
+	text-align: center;
+	color: white;
+	text-shadow: 3px 3px black;
+	z-index: 9999;
+	font-size: 48px;
+	font-weight: bold;
+	transition: .4s;
+	opacity: 0;
+	transform: scale(0);
+
+	&.go-in {
+		transform: scale(1);
+		opacity: 1;
+	}
+
+	&.go-out {
+		opacity: 0;
+	}
+}
+
+
+.random-steady {
+	#galaxy {
+		transform: rotateX(-15deg);
+	}
+}
+
+.clean-view {
+	#logo,
+	#signature,
+	#lobby {
+		opacity: 0;
+	}
+}
+
+
 #galaxy{
 	perspective: 1000px;
 	transform-style: preserve-3d;
 	position:absolute;
 	left:0;top:0;right:0;bottom:0;
 	transition: 2s;
-}
-
-.random-steady {
-	transform: rotateX(-15deg);	
 }
 
 // .random-ready {
@@ -124,10 +222,15 @@ body {
 .ground{
 	width:50px;height:50px;
 	transform-style: preserve-3d;
+
+	// background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, #fff 0%, #fff 100%, #ccc 95%);
+	// background-image: -webkit-radial-gradient(45px 45px, circle cover, #fff, #fff);
+	// background-image: radial-gradient(45px 45px 45deg, circle cover, #fff 0%, #fff 100%, #ccc 95%);
 	background-color:white;
+
 	border-radius:50%;
 	text-align: center;
-	color:black;
+	color:#333;
 	// color:white;
 	font-size: 24px;
 	font-family: sans-serif;
@@ -147,7 +250,7 @@ body {
 	width:120%;height:120%;
 	left:-10%;top:-10%;
 	z-index:-1;
-	background:url(#{$base_img_path}/img/bg.jpg) no-repeat;
+	background:url(#{$source_path}/img/bg.jpg) no-repeat;
 	background-size:120%;
 	background-position:center;
 }
@@ -171,15 +274,15 @@ body {
 #sun-glow{
 	position: relative;
 	left:0;top:0;
-	width:151px;height:151px;
-	background-color:orange;
+	width:120px;height:120px;
+	// background-color:orange;
 	border-radius:50%;
 	transform:translate3d(-50%,-50%,0);
 	animation: aura 2s infinite alternate;
 }
 .sun-aura{
 	width:270px;height:270px;
-	background-image:url(#{$base_img_path}/img/sun-aura.png);
+	background-image:url(#{$source_path}/img/sun-aura-face-less.png);
 	background-repeat:no-repeat;
 	position: absolute;
 	left:0;top:0;
@@ -197,7 +300,7 @@ body {
 }
 #sun-face{
 	width:270px;height:270px;
-	background-image:url(#{$base_img_path}/img/sun-face.png);
+	background-image:url(#{$source_path}/img/sun-face.png);
 	background-repeat:no-repeat;
 	position: absolute;
 	left:0;top:0;

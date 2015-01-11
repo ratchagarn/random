@@ -91,7 +91,7 @@ module.exports = function(grunt) {
         dest: 'dist/<%= pkg.name %>.js'
       },
       css: {
-        src: ['src/css/main.css'],
+        src: ['src/css/main.css', 'src/css/test.css'],
         dest: 'dist/<%= pkg.name %>.css'
       }
     },
@@ -181,7 +181,7 @@ module.exports = function(grunt) {
         keepSpecialComments: 0
       },
       files: {
-        src: 'src/css/main.css',
+        src: 'dist/<%= pkg.name %>.css',
         dest: 'dist/<%= pkg.name %>.min.css'
       }
     }
