@@ -29,8 +29,10 @@ bower_components
 .lock-wscript
 
 # development
+release
 dist
 dev
 test
 .sass-cache
 src/css
+update-release
