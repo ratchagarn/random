@@ -75,9 +75,9 @@ window.GOD = function(request_message) {
 }
 
 
-setTimeout(function() {
-  anim.showMessage('Young Webmaster Camp 12 - ค่ายเจาะลึกวิชาชีพ เว็บมาสเตอร์', 3000);
-}, 2000);
+// setTimeout(function() {
+//   anim.showMessage('Young Webmaster Camp 12 - ค่ายเจาะลึกวิชาชีพ เว็บมาสเตอร์', 60000);
+// }, 2000);
 
 
 /**
@@ -87,11 +87,11 @@ setTimeout(function() {
  */
 
 
-Mousetrap.bind('space', function() {
+Mousetrap.bind('r', function() {
   anim.steady();
 });
 
-Mousetrap.bind('r', function() {
+Mousetrap.bind('space', function() {
   anim.go();
 });
 
@@ -101,6 +101,13 @@ Mousetrap.bind('p', function() {
 
 Mousetrap.bind('s', function() {
   anim.shufflePlanet();
+});
+
+Mousetrap.bind('d d', function() {
+  if (confirm('Delete local storage ?')) {
+    random.clear();
+    window.location.reload();
+  }
 });
 
 

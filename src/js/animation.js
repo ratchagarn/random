@@ -451,9 +451,11 @@ Animation.prototype = {
 
                   setTimeout(function() {
 
+                    // keep latest group
+                    simpleStorage.set( 'latest-random-group', settings.name );
+
                     that.removePlanet(settings.name, i, function() {
                       random.popByIndex(i);
-                      console.log(random.source);
                       that.stopShakeStage();
                       that.showMessage(settings.project, 3000, function() {
                         recalulatePosition();
@@ -585,17 +587,28 @@ Animation.prototype = {
   
   showMessage: function(text, duration, callback) {
     var $message = $( document.getElementById('message') );
-    $message.text(text).addClass('go-in');
-    setTimeout(function() {
-      $message.addClass('go-out');
+    $message
+      .text(text)
+      .css('margin-top', -($message.outerHeight() / 2) + 'px' )
+      .addClass('prepare');
 
-      // fire callback
-      ( callback || util.noop )();
+    setTimeout(function() {
+
+      $message.addClass('go-in');
 
       setTimeout(function() {
-        $message.removeClass();
-      }, 250);
-    }, duration + 500);
+        $message.addClass('go-out');
+
+        // fire callback
+        ( callback || util.noop )();
+
+        setTimeout(function() {
+          $message.removeClass();
+        }, 250);
+      }, duration + 500);
+
+    });
+
   },
 
 
@@ -607,7 +620,7 @@ Animation.prototype = {
    */
   
   toLobby: function(name) {
-    var $target = $( document.getElementById( 'group-' + name.toLowerCase() ) );
+    var $target = $( '#group-' + name.toLowerCase() );
     $target.addClass('active current').siblings().removeClass('current');
   },
 
@@ -620,18 +633,29 @@ Animation.prototype = {
   
   restoreLobby: function() {
 
-    var state = random.getState();
+    var that = this,
+        state = random.getState(),
+        state_group_names = [];
 
     if ( state && state.length > 0 ) {
-      var that = this,
-          diff_groups = _.difference(
+
+      state.forEach(function(item) {
+        state_group_names.push(item.name);
+      });
+
+      var diff_groups = _.difference(
                           ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
-                          state
+                          state_group_names
                         );
 
       diff_groups.forEach(function(name, i) {
-        that.toLobby(name);
+        $( document.getElementById( 'group-' + name.toLowerCase() ) ).addClass('active');
       });
+
+      var latest_random_group = simpleStorage.get( 'latest-random-group' );
+      if (latest_random_group) {
+        $('#group-' + latest_random_group.toLowerCase()).addClass('current');
+      }
     }
   }
   
