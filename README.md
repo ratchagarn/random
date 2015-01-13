@@ -1,7 +1,7 @@
 random
 ======
 
-Random something with animation
+YWC12 Random system (Support only `GOOGLE CHROME` !)
 
 ## Version 0.2.2
 
